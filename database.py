@@ -1,26 +1,25 @@
 from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
 from sqlalchemy.orm import sessionmaker
-from sqlalchemy.future import select
+from models import Base  # Importa a base de modelos
+import asyncio
 from config import DATABASE_URL
 
-# Criar um motor de conexão assíncrono
+# Cria a engine do banco de dados (conexão assíncrona)
 engine = create_async_engine(DATABASE_URL, echo=True)
 
-# Criar uma sessão assíncrona
+# Configura a sessão do banco de dados
 SessionLocal = sessionmaker(
     bind=engine,
     class_=AsyncSession,
     expire_on_commit=False,
 )
 
-async def test_connection():
-    # Criar uma sessão para garantir o uso adequado
-    async with SessionLocal() as session:
-        async with session.begin():
-            # Usando a consulta select
-            result = await session.execute(select(1))
-            print("Conexão bem-sucedida:", result.scalar())
+# Função para criar as tabelas no banco de dados
+async def init_db():
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+    print("Tabelas criadas com sucesso!")
 
-# Rodar a função assíncrona para testar a conexão
-import asyncio
-asyncio.run(test_connection())
+# Executa a função assíncrona para criar as tabelas
+if __name__ == "__main__":
+    asyncio.run(init_db())
