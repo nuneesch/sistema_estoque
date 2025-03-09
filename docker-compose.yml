@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Teste12345
+      POSTGRES_DB: sistema_estoque
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  app:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql+asyncpg://admin:senha123@db:5432/sistema_estoque
+    depends_on:
+      - db
+
+volumes:
+  postgres_data:

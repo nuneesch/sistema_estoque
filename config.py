@@ -5,4 +5,4 @@ from dotenv import load_dotenv
 load_dotenv()
 
 # Configuração do banco de dados
-DATABASE_URL = os.getenv("DATABASE_URL", "postgresql+asyncpg://postgres:senha_aqui@localhost:5432/estoque_db")
+DATABASE_URL = os.getenv("DATABASE_URL")
